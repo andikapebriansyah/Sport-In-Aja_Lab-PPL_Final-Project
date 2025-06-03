@@ -1,0 +1,163 @@
+@layout('layouts/admin')
+
+@section('title')
+Edit Lapangan
+@end
+
+@section('content')
+<div class="px-4 sm:px-6 lg:px-8">
+  <div class="sm:flex sm:items-center">
+    <div class="sm:flex-auto">
+      <h1 class="text-xl font-semibold text-gray-900">Edit Lapangan</h1>
+      <p class="mt-2 text-sm text-gray-700">
+        Edit informasi lapangan
+      </p>
+    </div>
+    <div class="mt-4 sm:mt-0 sm:ml-16 sm:flex-none">
+      <a href="/admin/fields" class="inline-flex items-center justify-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 sm:w-auto">
+        <svg class="-ml-1 mr-2 h-5 w-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+          <path fill-rule="evenodd" d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z" clip-rule="evenodd" />
+        </svg>
+        Kembali
+      </a>
+    </div>
+  </div>
+
+  @if(flashMessages.has('errors'))
+    <div class="rounded-md bg-red-50 p-4 mt-4">
+      <div class="flex">
+        <div class="flex-shrink-0">
+          <svg class="h-5 w-5 text-red-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd" />
+          </svg>
+        </div>
+        <div class="ml-3">
+          <h3 class="text-sm font-medium text-red-800">Terdapat kesalahan:</h3>
+          <div class="mt-2 text-sm text-red-700">
+            <ul class="list-disc pl-5 space-y-1">
+              @if(Array.isArray(flashMessages.get('errors')))
+                @each(error in flashMessages.get('errors'))
+                  <li>{{ error }}</li>
+                @end
+              @else
+                @each((messages, field) in flashMessages.get('errors'))
+                  <li>{{ field }}: {{ messages }}</li>
+                @end
+              @endif
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  @endif
+
+  <div class="mt-8">
+    <form action="/admin/fields/{{ field.id }}/update" method="POST" enctype="multipart/form-data" class="space-y-8 divide-y divide-gray-200">
+      {{ csrfField() }}
+
+      <div class="space-y-8 divide-y divide-gray-200">
+        <div class="pt-8">
+          <div class="grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-6">
+            <div class="sm:col-span-4">
+              <label for="name" class="block text-sm font-medium text-gray-700">
+                Nama Lapangan
+              </label>
+              <div class="mt-1">
+                <input type="text" name="name" id="name" value="{{ field.name }}" class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
+              </div>
+            </div>
+
+            <div class="sm:col-span-4">
+              <label for="category" class="block text-sm font-medium text-gray-700">
+                Kategori
+              </label>
+              <div class="mt-1">
+                <select id="category" name="category" class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
+                  <option value="futsal" {{ field.category === 'futsal' ? 'selected' : '' }}>Futsal</option>
+                  <option value="badminton" {{ field.category === 'badminton' ? 'selected' : '' }}>Badminton</option>
+                  <option value="basket" {{ field.category === 'basket' ? 'selected' : '' }}>Basket</option>
+                  <option value="voli" {{ field.category === 'voli' ? 'selected' : '' }}>Voli</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="sm:col-span-4">
+              <label for="pricePerHour" class="block text-sm font-medium text-gray-700">
+                Harga per Jam
+              </label>
+              <div class="mt-1 relative rounded-md shadow-sm">
+                <div class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
+                  <span class="text-gray-500 sm:text-sm">Rp</span>
+                </div>
+                <input type="number" name="pricePerHour" id="pricePerHour" value="{{ field.pricePerHour }}" class="block w-full rounded-md border-gray-300 pl-12 focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
+              </div>
+            </div>
+
+            <div class="sm:col-span-6">
+              <label for="description" class="block text-sm font-medium text-gray-700">
+                Deskripsi
+              </label>
+              <div class="mt-1">
+                <textarea id="description" name="description" rows="3" class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">{{ field.description }}</textarea>
+              </div>
+            </div>
+
+            <div class="sm:col-span-4">
+              <label for="isAvailable" class="block text-sm font-medium text-gray-700">
+                Status Ketersediaan
+              </label>
+              <div class="mt-1">
+                <select id="isAvailable" name="isAvailable" class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
+                  <option value="true" {{ field.isAvailable ? 'selected' : '' }}>Tersedia untuk Booking</option>
+                  <option value="false" {{ !field.isAvailable ? 'selected' : '' }}>Tidak Tersedia</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="sm:col-span-6">
+              <label class="block text-sm font-medium text-gray-700">
+                Foto Lapangan
+              </label>
+              
+              @if(field.imageData)
+              <div class="mt-2">
+                <img src="{{ field.imageData }}" alt="{{ field.name }}" class="h-48 w-auto object-cover rounded-lg">
+              </div>
+              @endif
+
+              <div class="mt-4 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md">
+                <div class="space-y-1 text-center">
+                  <svg class="mx-auto h-12 w-12 text-gray-400" stroke="currentColor" fill="none" viewBox="0 0 48 48" aria-hidden="true">
+                    <path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                  </svg>
+                  <div class="flex text-sm text-gray-600">
+                    <label for="image" class="relative cursor-pointer bg-white rounded-md font-medium text-indigo-600 hover:text-indigo-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-indigo-500">
+                      <span>Upload a file</span>
+                      <input id="image" name="image" type="file" accept="image/*" class="sr-only">
+                    </label>
+                    <p class="pl-1">or drag and drop</p>
+                  </div>
+                  <p class="text-xs text-gray-500">
+                    PNG, JPG, GIF up to 10MB
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="pt-5">
+        <div class="flex justify-end">
+          <a href="/admin/fields" class="rounded-md border border-gray-300 bg-white py-2 px-4 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
+            Batal
+          </a>
+          <button type="submit" class="ml-3 inline-flex justify-center rounded-md border border-transparent bg-indigo-600 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
+            Simpan
+          </button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+@end 

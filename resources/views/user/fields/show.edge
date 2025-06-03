@@ -1,0 +1,196 @@
+@layout('layouts/user')
+
+@section('content')
+<div class="bg-white">
+  <div class="max-w-2xl mx-auto py-8 px-4 sm:py-12 sm:px-6 lg:max-w-7xl lg:px-8">
+    <div class="lg:grid lg:grid-cols-2 lg:gap-x-8 lg:items-start">
+      <!-- Image gallery -->
+      <div class="flex flex-col">
+        <div class="w-full aspect-w-16 aspect-h-9 bg-gray-200 rounded-lg overflow-hidden">
+          <img src="{{ field.imageData }}" 
+               alt="{{ field.name }}" 
+               class="w-full h-full object-center object-cover">
+        </div>
+      </div>
+
+      <!-- Field info -->
+      <div class="mt-10 px-4 sm:px-0 sm:mt-16 lg:mt-0">
+        <div class="flex justify-between items-center">
+          <h1 class="text-3xl font-extrabold tracking-tight text-gray-900">{{ field.name }}</h1>
+          <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium {{ field.isAvailable ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800' }}">
+            {{ field.isAvailable ? 'Available' : 'Booked' }}
+          </span>
+        </div>
+
+        <div class="mt-3">
+          <h2 class="sr-only">Field information</h2>
+          <p class="text-3xl text-gray-900">Rp {{ field.pricePerHour }}/hour</p>
+        </div>
+
+        <div class="mt-6">
+          <h3 class="sr-only">Description</h3>
+          <div class="text-base text-gray-700 space-y-6">
+            <p>{{ field.description }}</p>
+          </div>
+        </div>
+
+        <div class="mt-8">
+          <div class="space-y-4">
+            <h3 class="text-sm font-medium text-gray-900">Book this field</h3>
+            
+            <form id="bookingForm" action="/user/bookings" method="POST" class="space-y-4">
+              {{ csrfField() }}
+              <input type="hidden" name="fieldId" value="{{ field.id }}">
+              
+              <div>
+                <label for="date" class="block text-sm font-medium text-gray-700">Date</label>
+                <input type="date" name="date" id="date" required
+                       min="{{ new Date().toISOString().split('T')[0] }}"
+                       class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+              </div>
+
+              <div>
+                <label for="startTime" class="block text-sm font-medium text-gray-700">Start Time</label>
+                <select name="startTime" id="startTime" required
+                        class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                  <option value="">Select time</option>
+                  <option value="08:00">08:00</option>
+                  <option value="09:00">09:00</option>
+                  <option value="10:00">10:00</option>
+                  <option value="11:00">11:00</option>
+                  <option value="12:00">12:00</option>
+                  <option value="13:00">13:00</option>
+                  <option value="14:00">14:00</option>
+                  <option value="15:00">15:00</option>
+                  <option value="16:00">16:00</option>
+                  <option value="17:00">17:00</option>
+                  <option value="18:00">18:00</option>
+                  <option value="19:00">19:00</option>
+                  <option value="20:00">20:00</option>
+                </select>
+              </div>
+
+              <div>
+                <label for="duration" class="block text-sm font-medium text-gray-700">Duration (hours)</label>
+                <select name="duration" id="duration" required
+                        class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                  <option value="1">1 hour</option>
+                  <option value="2">2 hours</option>
+                  <option value="3">3 hours</option>
+                  <option value="4">4 hours</option>
+                </select>
+              </div>
+
+              <div class="mt-4 p-4 bg-gray-50 rounded-lg">
+                <div class="flex justify-between text-sm text-gray-600">
+                  <span>End Time:</span>
+                  <span id="endTime">-</span>
+                </div>
+                <div class="flex justify-between text-sm font-medium mt-2">
+                  <span>Total Price:</span>
+                  <span id="totalPrice">Rp 0</span>
+                </div>
+              </div>
+
+              <div id="bookingError" class="hidden mt-2 text-sm text-red-600"></div>
+
+              <div class="mt-6">
+                <button type="submit" id="bookButton"
+                        class="w-full bg-indigo-600 border border-transparent rounded-md py-3 px-8 flex items-center justify-center text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:bg-gray-400 disabled:cursor-not-allowed">
+                  Book Now
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const form = document.getElementById('bookingForm');
+  const dateInput = document.getElementById('date');
+  const timeInput = document.getElementById('startTime');
+  const durationInput = document.getElementById('duration');
+  const bookButton = document.getElementById('bookButton');
+  const errorDiv = document.getElementById('bookingError');
+  const endTimeDiv = document.getElementById('endTime');
+  const totalPriceDiv = document.getElementById('totalPrice');
+  const pricePerHour = {{ field.pricePerHour }};
+
+  function updateEndTimeAndPrice() {
+    if (!timeInput.value || !durationInput.value) {
+      endTimeDiv.textContent = '-';
+      totalPriceDiv.textContent = 'Rp 0';
+      return;
+    }
+
+    // Calculate end time
+    const [hours, minutes] = timeInput.value.split(':');
+    const startDate = new Date();
+    startDate.setHours(parseInt(hours), parseInt(minutes), 0);
+    
+    const endDate = new Date(startDate);
+    endDate.setHours(startDate.getHours() + parseInt(durationInput.value));
+    
+    const endTimeStr = endDate.getHours().toString().padStart(2, '0') + ':' + 
+                      endDate.getMinutes().toString().padStart(2, '0');
+    
+    endTimeDiv.textContent = endTimeStr;
+
+    // Calculate total price
+    const duration = parseInt(durationInput.value);
+    const totalPrice = pricePerHour * duration;
+    totalPriceDiv.textContent = `Rp ${totalPrice.toLocaleString()}`;
+  }
+
+  async function checkAvailability() {
+    if (!dateInput.value || !timeInput.value || !durationInput.value) return;
+
+    const response = await fetch(`/user/bookings/check-availability?fieldId={{ field.id }}&date=${dateInput.value}&startTime=${timeInput.value}&duration=${durationInput.value}`);
+    const data = await response.json();
+
+    if (!data.available) {
+      errorDiv.textContent = "Lapangan ini sudah dibooking pada waktu dan tanggal yang anda pilih.";
+      errorDiv.classList.remove('hidden');
+      bookButton.disabled = true;
+      bookButton.classList.add('bg-gray-400', 'cursor-not-allowed');
+      bookButton.classList.remove('bg-indigo-600', 'hover:bg-indigo-700');
+    } else {
+      errorDiv.classList.add('hidden');
+      bookButton.disabled = false;
+      bookButton.classList.remove('bg-gray-400', 'cursor-not-allowed');
+      bookButton.classList.add('bg-indigo-600', 'hover:bg-indigo-700');
+    }
+  }
+
+  dateInput.addEventListener('change', checkAvailability);
+  timeInput.addEventListener('change', () => {
+    checkAvailability();
+    updateEndTimeAndPrice();
+  });
+  durationInput.addEventListener('change', () => {
+    checkAvailability();
+    updateEndTimeAndPrice();
+  });
+
+  form.addEventListener('submit', async function(e) {
+    e.preventDefault();
+    
+    // Check availability one last time before submitting
+    const response = await fetch(`/user/bookings/check-availability?fieldId={{ field.id }}&date=${dateInput.value}&startTime=${timeInput.value}&duration=${durationInput.value}`);
+    const data = await response.json();
+
+    if (data.available) {
+      form.submit();
+    } else {
+      errorDiv.textContent = "Lapangan ini sudah dibooking pada waktu dan tanggal yang anda pilih.";
+      errorDiv.classList.remove('hidden');
+      bookButton.disabled = true;
+    }
+  });
+});
+</script>
+@end 

@@ -1,0 +1,138 @@
+@layout('layouts/admin')
+
+@section('title')
+Kelola Lapangan
+@end
+
+@section('content')
+<div class="px-4 sm:px-6 lg:px-8">
+  <div class="sm:flex sm:items-center">
+    <div class="sm:flex-auto">
+      <h1 class="text-xl font-semibold text-gray-900">Daftar Lapangan</h1>
+      <p class="mt-2 text-sm text-gray-700">
+        Daftar semua lapangan yang tersedia di Sport Inaja
+      </p>
+    </div>
+    <div class="mt-4 sm:mt-0 sm:ml-16 sm:flex-none">
+      <a href="/admin/fields/create" class="inline-flex items-center justify-center rounded-md border border-transparent bg-indigo-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 sm:w-auto">
+        Tambah Lapangan
+      </a>
+    </div>
+  </div>
+
+  @if(flashMessages.has('success'))
+    <div class="rounded-md bg-green-50 p-4 mt-4">
+      <div class="flex">
+        <div class="flex-shrink-0">
+          <svg class="h-5 w-5 text-green-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+          </svg>
+        </div>
+        <div class="ml-3">
+          <p class="text-sm font-medium text-green-800">
+            {{ flashMessages.get('success') }}
+          </p>
+        </div>
+      </div>
+    </div>
+  @endif
+
+  <div class="mt-8 flex flex-col">
+    <div class="-my-2 -mx-4 overflow-x-auto sm:-mx-6 lg:-mx-8">
+      <div class="inline-block min-w-full py-2 align-middle md:px-6 lg:px-8">
+        <div class="overflow-hidden shadow ring-1 ring-black ring-opacity-5 md:rounded-lg">
+          <table class="min-w-full divide-y divide-gray-300">
+            <thead class="bg-gray-50">
+              <tr>
+                <th scope="col" class="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-6">Nama</th>
+                <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Kategori</th>
+                <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Harga/Jam</th>
+                <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Status</th>
+                <th scope="col" class="relative py-3.5 pl-3 pr-4 sm:pr-6">
+                  <span class="sr-only">Actions</span>
+                </th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-gray-200 bg-white">
+              @each(field in fields)
+              <tr>
+                <td class="whitespace-nowrap py-4 pl-4 pr-3 text-sm sm:pl-6">
+                  <div class="font-medium text-gray-900">{{ field.name }}</div>
+                  <div class="text-gray-500">{{ field.description }}</div>
+                </td>
+                <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+                  <span class="inline-flex rounded-full bg-blue-100 px-2 text-xs font-semibold leading-5 text-blue-800">
+                    {{ field.category }}
+                  </span>
+                </td>
+                <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+                  Rp {{ field.pricePerHour ? Number(field.pricePerHour).toLocaleString('id-ID') : '0' }}
+                </td>
+                <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+                  @if(!field.isAvailable)
+                    <span class="inline-flex rounded-full bg-red-100 px-2 text-xs font-semibold leading-5 text-red-800">
+                      Tidak Tersedia
+                    </span>
+                  @else
+                    <span class="inline-flex rounded-full bg-green-100 px-2 text-xs font-semibold leading-5 text-green-800">
+                      Tersedia
+                    </span>
+                  @endif
+                </td>
+                <td class="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6">
+                  <div class="flex justify-end gap-2">
+                    <a href="/admin/fields/{{ field.id }}/edit" class="text-indigo-600 hover:text-indigo-900">
+                      Edit
+                    </a>
+                    <form action="/admin/fields/{{ field.id }}" method="POST" class="inline">
+                      {{ csrfField() }}
+                      <input type="hidden" name="_method" value="DELETE">
+                      <button type="submit" class="text-red-600 hover:text-red-900" onclick="return confirm('Yakin ingin menghapus lapangan ini?')">
+                        Hapus
+                      </button>
+                    </form>
+                  </div>
+                </td>
+              </tr>
+              @end
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  {{-- Pagination --}}
+  <div class="mt-6">
+    <nav class="flex items-center justify-between border-t border-gray-200 px-4 sm:px-0">
+      <div class="-mt-px flex w-0 flex-1">
+        @if(fields.currentPage > 1)
+        <a href="?page={{ fields.currentPage - 1 }}" class="inline-flex items-center border-t-2 border-transparent pt-4 pr-1 text-sm font-medium text-gray-500 hover:border-gray-300 hover:text-gray-700">
+          <svg class="mr-3 h-5 w-5 text-gray-400" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+            <path fill-rule="evenodd" d="M18 10a.75.75 0 01-.75.75H4.66l2.1 1.95a.75.75 0 11-1.02 1.1l-3.5-3.25a.75.75 0 010-1.1l3.5-3.25a.75.75 0 111.02 1.1l-2.1 1.95h12.59A.75.75 0 0118 10z" clip-rule="evenodd" />
+          </svg>
+          Previous
+        </a>
+        @endif
+      </div>
+      <div class="flex">
+        <p class="text-sm text-gray-700">
+          Showing <span class="font-medium">{{ ((fields.currentPage - 1) * fields.perPage) + 1 }}</span>
+          to <span class="font-medium">{{ Math.min(fields.currentPage * fields.perPage, fields.total) }}</span>
+          of <span class="font-medium">{{ fields.total }}</span> results
+        </p>
+      </div>
+      <div class="-mt-px flex w-0 flex-1 justify-end">
+        @if(fields.currentPage < fields.lastPage)
+        <a href="?page={{ fields.currentPage + 1 }}" class="inline-flex items-center border-t-2 border-transparent pt-4 pl-1 text-sm font-medium text-gray-500 hover:border-gray-300 hover:text-gray-700">
+          Next
+          <svg class="ml-3 h-5 w-5 text-gray-400" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+            <path fill-rule="evenodd" d="M2 10a.75.75 0 01.75-.75h12.59l-2.1-1.95a.75.75 0 111.02-1.1l3.5 3.25a.75.75 0 010 1.1l-3.5 3.25a.75.75 0 11-1.02-1.1l2.1-1.95H2.75A.75.75 0 012 10z" clip-rule="evenodd" />
+          </svg>
+        </a>
+        @endif
+      </div>
+    </nav>
+  </div>
+</div>
+@end 

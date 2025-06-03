@@ -1,0 +1,169 @@
+@layout('layouts/admin')
+@set('title', 'Detail Pemesanan')
+
+@section('content')
+<div class="px-4 sm:px-6 lg:px-8">
+  <div class="sm:flex sm:items-center">
+    <div class="sm:flex-auto">
+      <h1 class="text-xl font-semibold text-gray-900">Detail Pemesanan</h1>
+      <p class="mt-2 text-sm text-gray-700">
+        Informasi lengkap pemesanan lapangan
+      </p>
+    </div>
+    <div class="mt-4 sm:mt-0 sm:ml-16 sm:flex-none">
+      <a href="/admin/bookings" class="inline-flex items-center justify-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 sm:w-auto">
+        <svg class="-ml-1 mr-2 h-5 w-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+          <path fill-rule="evenodd" d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z" clip-rule="evenodd" />
+        </svg>
+        Kembali
+      </a>
+    </div>
+  </div>
+
+  @if(flashMessages.has('success'))
+    <div class="rounded-md bg-green-50 p-4 mt-4">
+      <div class="flex">
+        <div class="flex-shrink-0">
+          <svg class="h-5 w-5 text-green-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+          </svg>
+        </div>
+        <div class="ml-3">
+          <p class="text-sm font-medium text-green-800">
+            {{ flashMessages.get('success') }}
+          </p>
+        </div>
+      </div>
+    </div>
+  @endif
+
+  @if(flashMessages.has('error'))
+    <div class="rounded-md bg-red-50 p-4 mt-4">
+      <div class="flex">
+        <div class="flex-shrink-0">
+          <svg class="h-5 w-5 text-red-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd" />
+          </svg>
+        </div>
+        <div class="ml-3">
+          <p class="text-sm font-medium text-red-800">
+            {{ flashMessages.get('error') }}
+          </p>
+        </div>
+      </div>
+    </div>
+  @endif
+
+  <div class="mt-8 overflow-hidden bg-white shadow sm:rounded-lg">
+    <div class="px-4 py-5 sm:p-6">
+      <div class="grid grid-cols-1 gap-6 sm:grid-cols-2">
+        <!-- Informasi Pemesanan -->
+        <div>
+          <h3 class="text-lg font-medium leading-6 text-gray-900">Informasi Pemesanan</h3>
+          <div class="mt-5 border-t border-gray-200">
+            <dl class="divide-y divide-gray-200">
+              <div class="py-4 sm:grid sm:grid-cols-3 sm:gap-4">
+                <dt class="text-sm font-medium text-gray-500">ID Pemesanan</dt>
+                <dd class="mt-1 text-sm text-gray-900 sm:col-span-2 sm:mt-0">#{{ booking.id }}</dd>
+              </div>
+              <div class="py-4 sm:grid sm:grid-cols-3 sm:gap-4">
+                <dt class="text-sm font-medium text-gray-500">Status</dt>
+                <dd class="mt-1 text-sm sm:col-span-2 sm:mt-0">
+                  @if(booking.status === 'pending')
+                    <span class="inline-flex rounded-full bg-yellow-100 px-2 text-xs font-semibold leading-5 text-yellow-800">
+                      Menunggu Pembayaran
+                    </span>
+                  @elseif(booking.status === 'waiting')
+                    <span class="inline-flex rounded-full bg-blue-100 px-2 text-xs font-semibold leading-5 text-blue-800">
+                      Menunggu Konfirmasi
+                    </span>
+                  @elseif(booking.status === 'confirmed')
+                    <span class="inline-flex rounded-full bg-green-100 px-2 text-xs font-semibold leading-5 text-green-800">
+                      Dikonfirmasi
+                    </span>
+                  @else
+                    <span class="inline-flex rounded-full bg-red-100 px-2 text-xs font-semibold leading-5 text-red-800">
+                      Dibatalkan
+                    </span>
+                  @endif
+                </dd>
+              </div>
+              <div class="py-4 sm:grid sm:grid-cols-3 sm:gap-4">
+                <dt class="text-sm font-medium text-gray-500">Waktu Mulai</dt>
+                <dd class="mt-1 text-sm text-gray-900 sm:col-span-2 sm:mt-0">{{ booking.startTime.toFormat('dd/MM/yyyy HH:mm') }}</dd>
+              </div>
+              <div class="py-4 sm:grid sm:grid-cols-3 sm:gap-4">
+                <dt class="text-sm font-medium text-gray-500">Waktu Selesai</dt>
+                <dd class="mt-1 text-sm text-gray-900 sm:col-span-2 sm:mt-0">{{ booking.endTime.toFormat('dd/MM/yyyy HH:mm') }}</dd>
+              </div>
+              <div class="py-4 sm:grid sm:grid-cols-3 sm:gap-4">
+                <dt class="text-sm font-medium text-gray-500">Total Harga</dt>
+                <dd class="mt-1 text-sm text-gray-900 sm:col-span-2 sm:mt-0">Rp {{ booking.totalPrice.toLocaleString('id-ID') }}</dd>
+              </div>
+              <div class="py-4 sm:grid sm:grid-cols-3 sm:gap-4">
+                <dt class="text-sm font-medium text-gray-500">Tanggal Pemesanan</dt>
+                <dd class="mt-1 text-sm text-gray-900 sm:col-span-2 sm:mt-0">{{ booking.createdAt.toFormat('dd/MM/yyyy HH:mm') }}</dd>
+              </div>
+            </dl>
+          </div>
+        </div>
+
+        <!-- Informasi Pengguna dan Lapangan -->
+        <div>
+          <h3 class="text-lg font-medium leading-6 text-gray-900">Informasi Pengguna</h3>
+          <div class="mt-5 border-t border-gray-200">
+            <dl class="divide-y divide-gray-200">
+              <div class="py-4 sm:grid sm:grid-cols-3 sm:gap-4">
+                <dt class="text-sm font-medium text-gray-500">Nama</dt>
+                <dd class="mt-1 text-sm text-gray-900 sm:col-span-2 sm:mt-0">{{ booking.user.name }}</dd>
+              </div>
+              <div class="py-4 sm:grid sm:grid-cols-3 sm:gap-4">
+                <dt class="text-sm font-medium text-gray-500">Email</dt>
+                <dd class="mt-1 text-sm text-gray-900 sm:col-span-2 sm:mt-0">{{ booking.user.email }}</dd>
+              </div>
+              <div class="py-4 sm:grid sm:grid-cols-3 sm:gap-4">
+                <dt class="text-sm font-medium text-gray-500">No. Telepon</dt>
+                <dd class="mt-1 text-sm text-gray-900 sm:col-span-2 sm:mt-0">{{ booking.user.phone }}</dd>
+              </div>
+            </dl>
+          </div>
+
+          <h3 class="mt-8 text-lg font-medium leading-6 text-gray-900">Informasi Lapangan</h3>
+          <div class="mt-5 border-t border-gray-200">
+            <dl class="divide-y divide-gray-200">
+              <div class="py-4 sm:grid sm:grid-cols-3 sm:gap-4">
+                <dt class="text-sm font-medium text-gray-500">Nama Lapangan</dt>
+                <dd class="mt-1 text-sm text-gray-900 sm:col-span-2 sm:mt-0">{{ booking.field.name }}</dd>
+              </div>
+              <div class="py-4 sm:grid sm:grid-cols-3 sm:gap-4">
+                <dt class="text-sm font-medium text-gray-500">Harga per Jam</dt>
+                <dd class="mt-1 text-sm text-gray-900 sm:col-span-2 sm:mt-0">Rp {{ booking.field.pricePerHour.toLocaleString('id-ID') }}</dd>
+              </div>
+            </dl>
+          </div>
+        </div>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="mt-8 border-t border-gray-200 pt-6">
+        <div class="flex justify-end space-x-3">
+          @if(booking.status === 'waiting')
+            <form action="/admin/bookings/{{ booking.id }}/confirm" method="POST">
+              {{ csrfField() }}
+              <button type="submit" class="inline-flex justify-center rounded-md border border-transparent bg-green-600 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2" onclick="return confirm('Konfirmasi pemesanan ini?')">
+                Konfirmasi Pemesanan
+              </button>
+            </form>
+          @endif
+          <form action="/admin/bookings/{{ booking.id }}/delete" method="POST">
+            {{ csrfField() }}
+            <button type="submit" class="inline-flex justify-center rounded-md border border-transparent bg-red-600 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2" onclick="return confirm('Yakin ingin menghapus pemesanan ini?')">
+              Hapus Pemesanan
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+@end 

@@ -1,0 +1,133 @@
+@layout('layouts/admin')
+
+@section('title')
+Tambah Lapangan
+@end
+
+@section('content')
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+  <div class="space-y-8 divide-y divide-gray-200">
+    <form action="/admin/fields" method="POST" enctype="multipart/form-data">
+      {{ csrfField() }}
+      
+      <div class="space-y-8 divide-y divide-gray-200">
+        <div>
+          <div>
+            <h3 class="text-lg leading-6 font-medium text-gray-900">Informasi Lapangan</h3>
+            <p class="mt-1 text-sm text-gray-500">
+              Masukkan informasi detail lapangan yang akan ditambahkan.
+            </p>
+          </div>
+
+          <div class="mt-6 grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-6">
+            <div class="sm:col-span-4">
+              <label for="name" class="block text-sm font-medium text-gray-700">
+                Nama Lapangan
+              </label>
+              <div class="mt-1">
+                <input type="text" name="name" id="name" class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md" required>
+              </div>
+              @if(flashMessages.has('errors.name'))
+                <p class="mt-2 text-sm text-red-600">{{ flashMessages.get('errors.name') }}</p>
+              @endif
+            </div>
+
+            <div class="sm:col-span-6">
+              <label for="description" class="block text-sm font-medium text-gray-700">
+                Deskripsi
+              </label>
+              <div class="mt-1">
+                <textarea id="description" name="description" rows="3" class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border border-gray-300 rounded-md"></textarea>
+              </div>
+              @if(flashMessages.has('errors.description'))
+                <p class="mt-2 text-sm text-red-600">{{ flashMessages.get('errors.description') }}</p>
+              @endif
+            </div>
+
+            <div class="sm:col-span-2">
+              <label for="pricePerHour" class="block text-sm font-medium text-gray-700">
+                Harga per Jam
+              </label>
+              <div class="mt-1">
+                <input type="number" name="pricePerHour" id="pricePerHour" min="0" class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md" required>
+              </div>
+              @if(flashMessages.has('errors.pricePerHour'))
+                <p class="mt-2 text-sm text-red-600">{{ flashMessages.get('errors.pricePerHour') }}</p>
+              @endif
+            </div>
+
+            <div class="sm:col-span-2">
+              <label for="category" class="block text-sm font-medium text-gray-700">
+                Kategori
+              </label>
+              <div class="mt-1">
+                <select id="category" name="category" class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md">
+                  <option value="futsal">Futsal</option>
+                  <option value="badminton">Badminton</option>
+                  <option value="basket">Basket</option>
+                  <option value="voli">Voli</option>
+                </select>
+              </div>
+              @if(flashMessages.has('errors.category'))
+                <p class="mt-2 text-sm text-red-600">{{ flashMessages.get('errors.category') }}</p>
+              @endif
+            </div>
+
+            <div class="sm:col-span-2">
+              <label for="isAvailable" class="block text-sm font-medium text-gray-700">
+                Status Ketersediaan
+              </label>
+              <div class="mt-1">
+                <select id="isAvailable" name="isAvailable" class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md">
+                  <option value="true">Tersedia untuk Booking</option>
+                  <option value="false">Tidak Tersedia</option>
+                </select>
+              </div>
+              @if(flashMessages.has('errors.isAvailable'))
+                <p class="mt-2 text-sm text-red-600">{{ flashMessages.get('errors.isAvailable') }}</p>
+              @endif
+            </div>
+
+            <div class="sm:col-span-6">
+              <label class="block text-sm font-medium text-gray-700">
+                Foto Lapangan
+              </label>
+              <div class="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md">
+                <div class="space-y-1 text-center">
+                  <svg class="mx-auto h-12 w-12 text-gray-400" stroke="currentColor" fill="none" viewBox="0 0 48 48" aria-hidden="true">
+                    <path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                  </svg>
+                  <div class="flex text-sm text-gray-600">
+                    <label for="image" class="relative cursor-pointer bg-white rounded-md font-medium text-indigo-600 hover:text-indigo-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-indigo-500">
+                      <span>Upload a file</span>
+                      <input id="image" name="image" type="file" accept="image/*" class="sr-only" required>
+                    </label>
+                    <p class="pl-1">or drag and drop</p>
+                  </div>
+                  <p class="text-xs text-gray-500">
+                    PNG, JPG, GIF up to 10MB
+                  </p>
+                </div>
+              </div>
+              @if(flashMessages.has('errors.image'))
+                <p class="mt-2 text-sm text-red-600">{{ flashMessages.get('errors.image') }}</p>
+              @endif
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="pt-5">
+        <div class="flex justify-end">
+          <a href="/admin/fields" class="bg-white py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+            Batal
+          </a>
+          <button type="submit" class="ml-3 inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+            Simpan
+          </button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+@end 

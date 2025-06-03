@@ -1,0 +1,70 @@
+@layout('layouts/main')
+
+@set('title', field ? 'Edit Field' : 'Create Field')
+
+@section('content')
+<div class="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
+  <div class="px-4 py-6 sm:px-0">
+    <div class="bg-white shadow overflow-hidden sm:rounded-lg">
+      <div class="px-4 py-5 sm:px-6">
+        <h3 class="text-2xl font-bold leading-6 text-gray-900">{{ field ? 'Edit Field' : 'Create New Field' }}</h3>
+        <p class="mt-1 max-w-2xl text-sm text-gray-500">Fill in the field details below.</p>
+      </div>
+
+      <div class="border-t border-gray-200 px-4 py-5 sm:px-6">
+        <form action="{{ field ? `/user/fields/${field.id}` : '/user/fields' }}" method="POST" class="space-y-6">
+          @if(field)
+            <input type="hidden" name="_method" value="PUT">
+          @end
+
+          <div>
+            <label for="name" class="block text-sm font-medium text-gray-700">Field Name</label>
+            <input type="text" name="name" id="name" required value="{{ field ? field.name : '' }}"
+              class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+          </div>
+
+          <div>
+            <label for="description" class="block text-sm font-medium text-gray-700">Description</label>
+            <textarea name="description" id="description" rows="4" required
+              class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">{{ field ? field.description : '' }}</textarea>
+          </div>
+
+          <div>
+            <label for="pricePerHour" class="block text-sm font-medium text-gray-700">Price per Hour ($)</label>
+            <input type="number" name="pricePerHour" id="pricePerHour" required step="0.01" min="0" value="{{ field ? field.pricePerHour : '' }}"
+              class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+          </div>
+
+          <div>
+            <label for="imageUrl" class="block text-sm font-medium text-gray-700">Image URL</label>
+            <input type="url" name="imageUrl" id="imageUrl" required value="{{ field ? field.imageUrl : '' }}"
+              class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+          </div>
+
+          <div>
+            <label class="block text-sm font-medium text-gray-700">Availability</label>
+            <div class="mt-2">
+              <label class="inline-flex items-center">
+                <input type="checkbox" name="isAvailable" class="rounded border-gray-300 text-indigo-600 shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-500 focus:ring-opacity-50"
+                  {{ field && field.isAvailable ? 'checked' : '' }}>
+                <span class="ml-2 text-sm text-gray-600">Field is available for booking</span>
+              </label>
+            </div>
+          </div>
+
+          <div class="flex justify-end space-x-3">
+            <a href="/user/fields"
+              class="inline-flex justify-center py-2 px-4 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+              Cancel
+            </a>
+            <button type="submit"
+              class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+              {{ field ? 'Update Field' : 'Create Field' }}
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+@end 
