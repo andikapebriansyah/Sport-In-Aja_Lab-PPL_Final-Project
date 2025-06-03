@@ -39,7 +39,7 @@ Aplikasi manajemen fasilitas olahraga berbasis web yang dibangun menggunakan Ado
    node ace generate:key
    ```
 
-4. Konfigurasi database di file .env (copy isi env.example ke dalam env atau copy isi env berikut):
+4. Konfigurasi database di file .env:
    ```env
    DB_CONNECTION=mysql
    MYSQL_HOST=localhost
