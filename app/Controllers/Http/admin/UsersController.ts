@@ -1,16 +1,43 @@
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import User from 'App/Models/User'
 import { schema, rules } from '@ioc:Adonis/Core/Validator'
+import { DateTime } from 'luxon'
 
 export default class UsersController {
-  public async index({ view }: HttpContextContract) {
-    const users = await User.query().where('role', 'user')
+  public async index({ view, request }: HttpContextContract) {
+    const page = request.input('page', 1)
+    const limit = 10
+    
+    const users = await User.query()
+      .where('role', 'user')
+      .orderBy('created_at', 'desc')
+      .paginate(page, limit)
+    
     return view.render('admin/users/index', { users })
   }
 
-  public async show({ params, view }: HttpContextContract) {
+  public async show({ params, view, request }: HttpContextContract) {
+    const page = request.input('page', 1)
+    const limit = 10
+    
     const user = await User.findOrFail(params.id)
-    return view.render('admin/users/show', { user })
+    const bookings = await user.related('bookings')
+      .query()
+      .preload('field')
+      .orderBy('created_at', 'desc')
+      .paginate(page, limit)
+
+    // Format dates for each booking
+    bookings.forEach((booking) => {
+      if (booking.startTime) {
+        booking.startTime = DateTime.fromJSDate(booking.startTime.toJSDate())
+      }
+      if (booking.endTime) {
+        booking.endTime = DateTime.fromJSDate(booking.endTime.toJSDate())
+      }
+    })
+
+    return view.render('admin/users/show', { user, bookings })
   }
 
   public async update({ params, request, response, session }: HttpContextContract) {
