@@ -61,12 +61,20 @@ Aplikasi manajemen fasilitas olahraga berbasis web yang dibangun menggunakan Ado
    npm i @adonisjs/lucid
    node ace configure @adonisjs/lucid
    ```
+   Saat konfigurasi, pilih:
+   - Database driver: MySQL (mysql2)
+   - Konfirmasi untuk menambahkan variabel environment: Yes
 
 6. Install dan konfigurasi Auth
    ```bash
    npm i @adonisjs/auth
    node ace configure @adonisjs/auth
    ```
+   Saat konfigurasi, pilih:
+   - Authentication guard: Web guard (session based)
+   - Authentication provider: Lucid (database)
+   - User model name: User
+   - Buat migration untuk users table: false
 
 7. Jalankan migrasi database
    ```bash
