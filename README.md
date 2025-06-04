@@ -21,8 +21,8 @@ Aplikasi manajemen fasilitas olahraga berbasis web yang dibangun menggunakan Ado
 
 1. Clone repositori
    ```bash
-   git clone https://github.com/username/sport-inaja.git
-   cd sport-inaja
+   git clone https://github.com/andikapebriansyah/Sport-In-Aja_Lab-PPL_Final-Project.git
+   cd Sport-In-Aja_Lab-PPL_Final-Project
    ```
 
 2. Install dependensi
