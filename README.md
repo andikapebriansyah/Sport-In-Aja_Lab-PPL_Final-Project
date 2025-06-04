@@ -122,20 +122,21 @@ Aplikasi manajemen fasilitas olahraga berbasis web yang dibangun menggunakan Ado
 
 ```
 .
-├── app/                    # Kode utama aplikasi
-│   ├── Controllers/       # Controller
-│   ├── Models/           # Model database
-│   ├── Middleware/       # Middleware
-│   └── Validators/       # Validator form
-├── config/               # File konfigurasi
+├── app/                     # Kode utama aplikasi
+│   ├── Controllers/         # Controller
+│   ├── Models/              # Model database
+│   ├── Middleware/          # Middleware
+│   └── Validators/          # Validator form
+├── config/                  # File konfigurasi
 ├── database/            
-│   ├── migrations/      # Migrasi database
-│   └── seeders/        # Seeder database
-├── public/              # Asset publik
+│   ├── migrations/          # Migrasi database
+│   └── seeders/             # Seeder database
+├── public/                  # Asset publik
 ├── resources/
-│   └── views/          # File view
-├── start/              # File startup
-└── tests/              # Unit test
+│   └── views/               # File view
+├── start/                   # File startup
+└── tests/                   # Unit test
+
 ```
 
 ## Fitur
