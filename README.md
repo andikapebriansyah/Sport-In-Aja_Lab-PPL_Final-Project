@@ -40,20 +40,20 @@ Aplikasi manajemen fasilitas olahraga berbasis web yang dibangun menggunakan Ado
    ```
 
 4. Konfigurasi database di file .env berdasarkan isi .env.example berikut:
-   ```env
-  PORT=3333
-  HOST=0.0.0.0
-  NODE_ENV=development
-  APP_KEY=your-secret-app-key
-  DRIVE_DISK=local
-  DB_CONNECTION=mysql
-  MYSQL_HOST=localhost
-  MYSQL_PORT=3306
-  MYSQL_USER=root
-  MYSQL_PASSWORD=
-  MYSQL_DB_NAME=sport_inaja
-  SESSION_DRIVER=cookie
-  CACHE_VIEWS=false
+   ```bash
+    PORT=3333
+    HOST=0.0.0.0
+    NODE_ENV=development
+    APP_KEY=your-secret-app-key
+    DRIVE_DISK=local
+    DB_CONNECTION=mysql
+    MYSQL_HOST=localhost
+    MYSQL_PORT=3306
+    MYSQL_USER=root
+    MYSQL_PASSWORD=
+    MYSQL_DB_NAME=sport_inaja
+    SESSION_DRIVER=cookie
+    CACHE_VIEWS=false
    ```
 
 5. Install dan konfigurasi Lucid ORM
