@@ -1,5 +1,12 @@
 # Sport-In Aja - Sistem Manajemen Fasilitas Olahraga
 
+## Link Presentasi
+
+- **Link PPT Presentasi**: https://drive.google.com/file/d/1etOiPJ_fbALioFXhI7URla2o-qQQVGmy/view?usp=sharing
+- **Link Video Presentasi**: https://youtu.be/ym5vHw19wVo
+
+---
+
 Aplikasi manajemen fasilitas olahraga berbasis web yang dibangun menggunakan AdonisJS.
 
 ## Prasyarat
